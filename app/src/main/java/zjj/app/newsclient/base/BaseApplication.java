@@ -19,12 +19,15 @@ import com.google.gson.Gson;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import zjj.app.newsclient.BuildConfig;
 import zjj.app.newsclient.domain.Channels;
+import zjj.app.newsclient.domain.NewsList;
 import zjj.app.newsclient.networking.BitmapCache;
 import zjj.app.newsclient.utils.Constant;
 import zjj.app.newsclient.utils.SharedPreferencesUtils;
+import zjj.app.newsclient.utils.URLUtils;
 
 public class BaseApplication extends Application {
 
@@ -103,6 +106,8 @@ public class BaseApplication extends Application {
 
         addToRequestQueue(request, "UpdateChannels");
     }
+
+
 
     public ImageLoader getImageLoader(){
         return imageLoader;
