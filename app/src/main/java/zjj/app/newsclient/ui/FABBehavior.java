@@ -9,9 +9,10 @@ import android.view.View;
 
 import zjj.app.newsclient.utils.UIUtils;
 
-public class FABBehavior extends FloatingActionButton.Behavior{
+public class FABBehavior extends FloatingActionButton.Behavior {
 
     private int toolbarHeight;
+
     public FABBehavior(Context context, AttributeSet attrs) {
         super();
         this.toolbarHeight = UIUtils.getToolBarHeight(context);
@@ -29,8 +30,8 @@ public class FABBehavior extends FloatingActionButton.Behavior{
             CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams) fab.getLayoutParams();
             int fabBottomMargin = lp.bottomMargin;
             int distanceToScroll = fab.getHeight() + fabBottomMargin;
-            float ratio = (float)dependency.getY()/(float)toolbarHeight;
-            fab.setTranslationY(-distanceToScroll * ratio);
+            float ratio = dependency.getY() / (float) toolbarHeight;
+            fab.setTranslationY(-distanceToScroll * ratio * 1.5f);
         }
         return returnValue;
     }

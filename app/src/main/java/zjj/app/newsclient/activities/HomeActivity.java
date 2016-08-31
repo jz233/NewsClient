@@ -16,6 +16,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -41,30 +42,58 @@ import zjj.app.newsclient.utils.Constant;
 import zjj.app.newsclient.utils.UIUtils;
 import zjj.app.newsclient.utils.URLUtils;
 
-public class HomeActivity extends BaseActivity{
+public class HomeActivity extends BaseActivity implements View.OnClickListener {
 
     private NewsClientListener listener;
     private FragmentManager fm;
+    private final static int TYPE_FOCUSES = 0;
+    private final static int TYPE_NEWEST = 1;
+    private LinearLayout ll_focuses;
+    private LinearLayout ll_newest;
+
 
     @Override
     public void initView() {
         setContentView(R.layout.activity_home);
         fm = getSupportFragmentManager();
+
+        setupBottomNavBar();
+
+        setCheckedFragment(TYPE_FOCUSES);
+
+    }
+
+    private void setCheckedFragment(int type) {
         fm.beginTransaction()
-                .replace(R.id.fragment_container, FocusesFragment.newInstance(), "FocusesFragment")
+                .replace(R.id.fragment_container, FocusesFragment.newInstance(type), "FocusesFragment")
                 .commit();
 
+    }
 
+    private void setupBottomNavBar() {
+        ll_focuses = (LinearLayout) findViewById(R.id.ll_focuses);
+        ll_newest = (LinearLayout) findViewById(R.id.ll_newest);
     }
 
     @Override
     public void initListener() {
-
+        ll_focuses.setOnClickListener(this);
+        ll_newest.setOnClickListener(this);
     }
 
     @Override
     public void initData() {
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+        if(R.id.ll_focuses == id){
+            setCheckedFragment(TYPE_FOCUSES);
+        }else if(R.id.ll_newest == id){
+            setCheckedFragment(TYPE_NEWEST);
+        }
     }
 
     public interface NewsClientListener{
@@ -74,6 +103,7 @@ public class HomeActivity extends BaseActivity{
     public void getNewsRequest(String baseUrl, TreeMap<String, String> paramMap, final NewsClientListener listener){
         String url = URLUtils.getUrl(baseUrl, paramMap);
 
+        if (BuildConfig.DEBUG) Log.d("HomeActivity", url);
         StringRequest request = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override

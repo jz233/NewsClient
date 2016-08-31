@@ -1,5 +1,6 @@
 package zjj.app.newsclient.fragments;
 
+import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -28,8 +29,11 @@ public class NewestFragment extends BaseFragment{
 
     public NewestFragment(){}
 
-    public static NewestFragment newInstance(){
+    public static NewestFragment newInstance(int type){
         NewestFragment fragment = new NewestFragment();
+        Bundle args = new Bundle();
+        args.putInt("type", type);
+        fragment.setArguments(args);
         return fragment;
     }
 
@@ -41,12 +45,15 @@ public class NewestFragment extends BaseFragment{
         tab_layout = (TabLayout) view.findViewById(R.id.tab_layout);
         context.setSupportActionBar(toolbar);
 
-        root_view = (CoordinatorLayout)view. findViewById(R.id.root_view);
+        root_view = (CoordinatorLayout) view.findViewById(R.id.root_view);
         fab = (FloatingActionButton) view.findViewById(R.id.fab);
         viewpager = (ViewPager) view.findViewById(R.id.viewpager);
         tab_layout = (TabLayout) view.findViewById(R.id.tab_layout);
 
-        adapter = new NewsPagerAdapter(context, context.getSupportFragmentManager(), topics);
+        Bundle args = getArguments();
+        int type = args.getInt("type", 0);
+
+        adapter = new NewsPagerAdapter(context, context.getSupportFragmentManager(), topics, type);
         viewpager.setAdapter(adapter);
         tab_layout.setupWithViewPager(viewpager);
 

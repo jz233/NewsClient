@@ -1,28 +1,24 @@
 package zjj.app.newsclient.fragments;
 
+import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-
-import java.util.TreeMap;
+import android.widget.LinearLayout;
 
 import zjj.app.newsclient.R;
-import zjj.app.newsclient.activities.HomeActivity;
 import zjj.app.newsclient.adapters.NewsPagerAdapter;
 import zjj.app.newsclient.base.BaseFragment;
-import zjj.app.newsclient.domain.NewsList;
-import zjj.app.newsclient.utils.Constant;
 
-public class FocusesFragment extends BaseFragment{
+public class FocusesFragment extends BaseFragment {
 
     private Toolbar toolbar;
     private FloatingActionButton fab;
@@ -31,12 +27,18 @@ public class FocusesFragment extends BaseFragment{
     private NewsPagerAdapter adapter;
     private String[] topics = {"国内", "国际", "教育"};
     private CoordinatorLayout root_view;
+    private LinearLayout ll_focuses;
+    private LinearLayout ll_newest;
 
 
-    public FocusesFragment(){}
+    public FocusesFragment() {
+    }
 
-    public static FocusesFragment newInstance(){
+    public static FocusesFragment newInstance(int type) {
         FocusesFragment fragment = new FocusesFragment();
+        Bundle args = new Bundle();
+        args.putInt("type", type);
+        fragment.setArguments(args);
         return fragment;
     }
 
@@ -48,17 +50,22 @@ public class FocusesFragment extends BaseFragment{
         tab_layout = (TabLayout) view.findViewById(R.id.tab_layout);
         context.setSupportActionBar(toolbar);
 
-        root_view = (CoordinatorLayout)view. findViewById(R.id.root_view);
+        root_view = (CoordinatorLayout) view.findViewById(R.id.root_view);
         fab = (FloatingActionButton) view.findViewById(R.id.fab);
         viewpager = (ViewPager) view.findViewById(R.id.viewpager);
         tab_layout = (TabLayout) view.findViewById(R.id.tab_layout);
 
-        adapter = new NewsPagerAdapter(context, context.getSupportFragmentManager(), topics);
+        Bundle args = getArguments();
+        adapter = new NewsPagerAdapter(context, context.getSupportFragmentManager(), topics, args.getInt("type", 0));
+        viewpager.setOffscreenPageLimit(2);
         viewpager.setAdapter(adapter);
         tab_layout.setupWithViewPager(viewpager);
+        
 
         return view;
     }
+
+
 
     @Override
     protected void initListener() {
@@ -69,6 +76,7 @@ public class FocusesFragment extends BaseFragment{
                         .setAction("Action", null).show();
             }
         });
+
     }
 
     @Override
@@ -93,4 +101,5 @@ public class FocusesFragment extends BaseFragment{
 
         return super.onOptionsItemSelected(item);
     }
+
 }

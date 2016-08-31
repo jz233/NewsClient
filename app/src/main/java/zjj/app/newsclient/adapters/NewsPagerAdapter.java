@@ -12,17 +12,23 @@ import zjj.app.newsclient.utils.SharedPreferencesUtils;
 
 public class NewsPagerAdapter extends FragmentStatePagerAdapter {
 
-    private final String internationalId;
-    private final String eduId;
+    private String internationalId;
+    private String eduId;
     private String[] topics;
-    private final String domesticId;
+    private String domesticId;
 
-    public NewsPagerAdapter(AppCompatActivity context, FragmentManager fm, String[] topics) {
+    public NewsPagerAdapter(AppCompatActivity context, FragmentManager fm, String[] topics, int type) {
         super(fm);
         this.topics = topics;
-        domesticId = SharedPreferencesUtils.getString(context, "国内焦点", Constant.DEFAULT_CHANNEL_ID);
-        internationalId = SharedPreferencesUtils.getString(context, "国际焦点", Constant.DEFAULT_CHANNEL_ID);
-        eduId = SharedPreferencesUtils.getString(context, "教育焦点", Constant.DEFAULT_CHANNEL_ID);
+        if(type == 0){
+            domesticId = SharedPreferencesUtils.getString(context, "国内焦点", Constant.DEFAULT_CHANNEL_ID);
+            internationalId = SharedPreferencesUtils.getString(context, "国际焦点", Constant.DEFAULT_CHANNEL_ID);
+            eduId = SharedPreferencesUtils.getString(context, "教育焦点", Constant.DEFAULT_CHANNEL_ID);
+        }else if(type == 1){
+            domesticId = SharedPreferencesUtils.getString(context, "国内最新", Constant.DEFAULT_CHANNEL_ID);
+            internationalId = SharedPreferencesUtils.getString(context, "国际最新", Constant.DEFAULT_CHANNEL_ID);
+            eduId = SharedPreferencesUtils.getString(context, "教育最新", Constant.DEFAULT_CHANNEL_ID);
+        }
     }
 
     @Override
