@@ -7,6 +7,8 @@ public class Constant {
     public final static String URL_CHANNELS = "http://apis.baidu.com/showapi_open_bus/channel_news/channel_news";
     public final static String APIKEY = "bca5831d6e66d7c0d15a479dfcaa9213";
     public final static String NEWS_CLIENT = "NewsClient";
+    public final static String DEFAULT_CHANNEL_ID = "5572a109b3cdc86cf39001db";
+
 
 
     public final static String[] FOCUSES = {"国内焦点","国际焦点","体育焦点"};

@@ -3,30 +3,37 @@ package zjj.app.newsclient.adapters;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v7.app.AppCompatActivity;
 
 import zjj.app.newsclient.fragments.DefaultFragment;
-import zjj.app.newsclient.fragments.DomesticFragment;
-import zjj.app.newsclient.fragments.InternationalFragment;
-import zjj.app.newsclient.fragments.SportsFragment;
+import zjj.app.newsclient.fragments.NewsPagerFragment;
+import zjj.app.newsclient.utils.Constant;
+import zjj.app.newsclient.utils.SharedPreferencesUtils;
 
-public class NewsPagerAdapter extends FragmentStatePagerAdapter{
+public class NewsPagerAdapter extends FragmentStatePagerAdapter {
 
+    private final String internationalId;
+    private final String eduId;
     private String[] topics;
+    private final String domesticId;
 
-    public NewsPagerAdapter(FragmentManager fm, String[] topics) {
+    public NewsPagerAdapter(AppCompatActivity context, FragmentManager fm, String[] topics) {
         super(fm);
         this.topics = topics;
+        domesticId = SharedPreferencesUtils.getString(context, "国内焦点", Constant.DEFAULT_CHANNEL_ID);
+        internationalId = SharedPreferencesUtils.getString(context, "国际焦点", Constant.DEFAULT_CHANNEL_ID);
+        eduId = SharedPreferencesUtils.getString(context, "教育焦点", Constant.DEFAULT_CHANNEL_ID);
     }
 
     @Override
     public Fragment getItem(int position) {
-        switch (position){
+        switch (position) {
             case 0:
-                return DomesticFragment.newInstance();
+                return NewsPagerFragment.newInstance(domesticId, "1");
             case 1:
-                return InternationalFragment.newInstance();
+                return NewsPagerFragment.newInstance(internationalId, "1");
             case 2:
-                return SportsFragment.newInstance();
+                return NewsPagerFragment.newInstance(eduId, "1");
         }
         return DefaultFragment.newInstance();
     }

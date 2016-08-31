@@ -6,23 +6,17 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
-import java.util.TreeMap;
-
 import zjj.app.newsclient.R;
-import zjj.app.newsclient.activities.HomeActivity;
 import zjj.app.newsclient.adapters.NewsPagerAdapter;
 import zjj.app.newsclient.base.BaseFragment;
-import zjj.app.newsclient.domain.NewsList;
-import zjj.app.newsclient.utils.Constant;
 
-public class FocusesFragment extends BaseFragment{
+public class NewestFragment extends BaseFragment{
 
     private Toolbar toolbar;
     private FloatingActionButton fab;
@@ -32,11 +26,10 @@ public class FocusesFragment extends BaseFragment{
     private String[] topics = {"国内", "国际", "教育"};
     private CoordinatorLayout root_view;
 
+    public NewestFragment(){}
 
-    public FocusesFragment(){}
-
-    public static FocusesFragment newInstance(){
-        FocusesFragment fragment = new FocusesFragment();
+    public static NewestFragment newInstance(){
+        NewestFragment fragment = new NewestFragment();
         return fragment;
     }
 

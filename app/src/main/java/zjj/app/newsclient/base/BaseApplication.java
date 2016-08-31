@@ -43,6 +43,7 @@ public class BaseApplication extends Application {
         instance = this;
 
         bitmapCache = new BitmapCache();
+        requestQueue = getRequestQueue();
         imageLoader = new ImageLoader(requestQueue, bitmapCache);
 
         updateChannelsRequest();
