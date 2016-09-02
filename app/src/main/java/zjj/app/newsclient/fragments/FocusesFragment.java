@@ -27,8 +27,6 @@ public class FocusesFragment extends BaseFragment {
     private NewsPagerAdapter adapter;
     private String[] topics = {"国内", "国际", "教育"};
     private CoordinatorLayout root_view;
-    private LinearLayout ll_focuses;
-    private LinearLayout ll_newest;
 
 
     public FocusesFragment() {
@@ -56,7 +54,7 @@ public class FocusesFragment extends BaseFragment {
         tab_layout = (TabLayout) view.findViewById(R.id.tab_layout);
 
         Bundle args = getArguments();
-        adapter = new NewsPagerAdapter(context, context.getSupportFragmentManager(), topics, args.getInt("type", 0));
+        adapter = new NewsPagerAdapter(context, getChildFragmentManager(), topics, args.getInt("type", 0));
         viewpager.setOffscreenPageLimit(2);
         viewpager.setAdapter(adapter);
         tab_layout.setupWithViewPager(viewpager);
