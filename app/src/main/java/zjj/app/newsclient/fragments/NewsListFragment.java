@@ -12,13 +12,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
 
 import zjj.app.newsclient.R;
 import zjj.app.newsclient.adapters.NewsPagerAdapter;
 import zjj.app.newsclient.base.BaseFragment;
 
-public class FocusesFragment extends BaseFragment {
+public class NewsListFragment extends BaseFragment {
 
     private Toolbar toolbar;
     private FloatingActionButton fab;
@@ -29,11 +28,11 @@ public class FocusesFragment extends BaseFragment {
     private CoordinatorLayout root_view;
 
 
-    public FocusesFragment() {
+    public NewsListFragment() {
     }
 
-    public static FocusesFragment newInstance(int type) {
-        FocusesFragment fragment = new FocusesFragment();
+    public static NewsListFragment newInstance(int type) {
+        NewsListFragment fragment = new NewsListFragment();
         Bundle args = new Bundle();
         args.putInt("type", type);
         fragment.setArguments(args);
@@ -42,7 +41,7 @@ public class FocusesFragment extends BaseFragment {
 
     @Override
     protected View initView(LayoutInflater inflater) {
-        View view = inflater.inflate(R.layout.fragment_focuses, null);
+        View view = inflater.inflate(R.layout.fragment_news_list, null);
 
         toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         tab_layout = (TabLayout) view.findViewById(R.id.tab_layout);

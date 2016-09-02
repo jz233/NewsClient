@@ -1,6 +1,7 @@
 package zjj.app.newsclient.fragments;
 
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -22,6 +23,7 @@ public class NewsPagerFragment extends BaseFragment {
     private NewsListAdapter adapter;
     private String channelId;
     private String age;
+    private SwipeRefreshLayout swipe_refresh_layout;
 
     public NewsPagerFragment(){}
 
@@ -41,13 +43,21 @@ public class NewsPagerFragment extends BaseFragment {
         View view = inflater.inflate(R.layout.fragment_newspager, null);
         rv_news_list = (RecyclerView) view.findViewById(R.id.rv_news_list);
         rv_news_list.setLayoutManager(new LinearLayoutManager(context));
+        swipe_refresh_layout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
+        swipe_refresh_layout.setColorSchemeResources(R.color.colorPrimary);
 
         return view;
     }
 
     @Override
     protected void initListener() {
-
+        swipe_refresh_layout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipe_refresh_layout.setRefreshing(true);
+                initData();
+            }
+        });
     }
 
     @Override
@@ -57,6 +67,9 @@ public class NewsPagerFragment extends BaseFragment {
             @Override
             public void OnNewsListResponse(NewsList newsList) {
                 Log.d("NewsClient","OnNewsListResponse");
+                if(swipe_refresh_layout.isRefreshing()){
+                    swipe_refresh_layout.setRefreshing(false);
+                }
                 adapter = new NewsListAdapter(getActivity(), newsList);
                 rv_news_list.setAdapter(adapter);
             }

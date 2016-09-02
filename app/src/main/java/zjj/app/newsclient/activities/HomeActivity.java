@@ -28,9 +28,7 @@ import zjj.app.newsclient.base.BaseApplication;
 import zjj.app.newsclient.base.BaseFragment;
 import zjj.app.newsclient.domain.NewsList;
 import zjj.app.newsclient.fragments.DefaultFragment;
-import zjj.app.newsclient.fragments.FocusesFragment;
-import zjj.app.newsclient.fragments.NewestFragment;
-import zjj.app.newsclient.fragments.NewsPagerFragment;
+import zjj.app.newsclient.fragments.NewsListFragment;
 import zjj.app.newsclient.utils.Constant;
 import zjj.app.newsclient.utils.URLUtils;
 
@@ -209,8 +207,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
 
     private void handleFragments(int type) {
         FragmentTransaction transaction = fm.beginTransaction();
-        FocusesFragment focusesFragment = (FocusesFragment) fm.findFragmentByTag("FocusesFragment");
-        FocusesFragment newestFragment = (FocusesFragment) fm.findFragmentByTag("NewestFragment");
+        NewsListFragment focusesFragment = (NewsListFragment) fm.findFragmentByTag("FocusesFragment");
+        NewsListFragment newestFragment = (NewsListFragment) fm.findFragmentByTag("NewestFragment");
         BaseFragment favoritesFragment = (BaseFragment) fm.findFragmentByTag("FavoritesFragment");
         BaseFragment meFragment = (BaseFragment) fm.findFragmentByTag("MeFragment");
 
@@ -225,7 +223,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
                 if(focusesFragment != null){
                     transaction.show(focusesFragment).commit();
                 }else{
-                    transaction.add(R.id.fragment_container, FocusesFragment.newInstance(TYPE_FOCUSES), "FocusesFragment").commit();
+                    transaction.add(R.id.fragment_container, NewsListFragment.newInstance(TYPE_FOCUSES), "FocusesFragment").commit();
                 }
                 break;
             case TYPE_NEWEST:
@@ -238,7 +236,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
                 if(newestFragment != null){
                     transaction.show(newestFragment).commit();
                 }else{
-                    transaction.add(R.id.fragment_container, FocusesFragment.newInstance(TYPE_NEWEST), "NewestFragment").commit();
+                    transaction.add(R.id.fragment_container, NewsListFragment.newInstance(TYPE_NEWEST), "NewestFragment").commit();
                 }
                 break;
             case TYPE_FAVORITE:

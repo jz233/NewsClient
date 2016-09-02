@@ -39,7 +39,7 @@ public class NewestFragment extends BaseFragment{
 
     @Override
     protected View initView(LayoutInflater inflater) {
-        View view = inflater.inflate(R.layout.fragment_focuses, null);
+        View view = inflater.inflate(R.layout.fragment_news_list, null);
 
         toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         tab_layout = (TabLayout) view.findViewById(R.id.tab_layout);
