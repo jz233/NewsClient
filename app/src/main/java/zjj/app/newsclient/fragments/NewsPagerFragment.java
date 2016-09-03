@@ -13,8 +13,11 @@ import java.util.TreeMap;
 import zjj.app.newsclient.R;
 import zjj.app.newsclient.activities.HomeActivity;
 import zjj.app.newsclient.adapters.NewsListAdapter;
+import zjj.app.newsclient.base.BaseActivity;
+import zjj.app.newsclient.base.BaseApplication;
 import zjj.app.newsclient.base.BaseFragment;
 import zjj.app.newsclient.domain.NewsList;
+import zjj.app.newsclient.ui.VerticalSpaceItemDecoration;
 import zjj.app.newsclient.utils.Constant;
 
 public class NewsPagerFragment extends BaseFragment {
@@ -43,6 +46,7 @@ public class NewsPagerFragment extends BaseFragment {
         View view = inflater.inflate(R.layout.fragment_newspager, null);
         rv_news_list = (RecyclerView) view.findViewById(R.id.rv_news_list);
         rv_news_list.setLayoutManager(new LinearLayoutManager(context));
+        rv_news_list.addItemDecoration(new VerticalSpaceItemDecoration(10));
         swipe_refresh_layout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
         swipe_refresh_layout.setColorSchemeResources(R.color.colorPrimary);
 
@@ -54,7 +58,6 @@ public class NewsPagerFragment extends BaseFragment {
         swipe_refresh_layout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                swipe_refresh_layout.setRefreshing(true);
                 initData();
             }
         });
@@ -62,11 +65,12 @@ public class NewsPagerFragment extends BaseFragment {
 
     @Override
     protected void initData() {
+        swipe_refresh_layout.setRefreshing(true);
         TreeMap<String, String> params = getRequestParams();
-        ((HomeActivity)context).getNewsRequest(Constant.BASE_URL, params, new HomeActivity.NewsClientListener() {
+        BaseApplication.getInstance().getJsonStringRequest(context, Constant.BASE_URL, params, "GetNewsList", new BaseApplication.NewsClientListener() {
             @Override
             public void OnNewsListResponse(NewsList newsList) {
-                Log.d("NewsClient","OnNewsListResponse");
+                Log.d("BaseApplication","OnNewsListResponse");
                 if(swipe_refresh_layout.isRefreshing()){
                     swipe_refresh_layout.setRefreshing(false);
                 }

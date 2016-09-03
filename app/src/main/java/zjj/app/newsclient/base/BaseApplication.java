@@ -1,6 +1,7 @@
 package zjj.app.newsclient.base;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 import android.util.Log;
@@ -77,6 +78,9 @@ public class BaseApplication extends Application {
     }
 
 
+    /**
+     * 每次启动更新一遍新闻分类channelId
+     */
     public void updateChannelsRequest(){
         StringRequest request = new StringRequest(Request.Method.GET, Constant.URL_CHANNELS, new Response.Listener<String>() {
             @Override
@@ -115,5 +119,43 @@ public class BaseApplication extends Application {
     }
 
 
+    public interface NewsClientListener{
+        void OnNewsListResponse(NewsList newsList);
+    }
 
+
+    public void getJsonStringRequest(final Context context, String baseUrl, TreeMap<String, String> paramMap, String tag, final NewsClientListener listener) {
+        String url = URLUtils.getUrl(baseUrl, paramMap);
+
+        if (BuildConfig.DEBUG) Log.d("BaseApplication", url);
+        StringRequest request = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        if (BuildConfig.DEBUG) Log.d("BaseApplication", response);
+                        NewsList newsList = new Gson().fromJson(response, NewsList.class);
+                        listener.OnNewsListResponse(newsList);
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(context, "network error", Toast.LENGTH_SHORT).show();
+                Log.d("BaseApplication", "network error");
+                if (error != null) {
+                    Log.d("BaseApplication", error.getMessage());
+                }
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("apikey", Constant.APIKEY);
+
+                return headers;
+            }
+        };
+
+        BaseApplication.getInstance().addToRequestQueue(request, tag);
+    }
 }

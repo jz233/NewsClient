@@ -1,11 +1,17 @@
 package zjj.app.newsclient.fragments;
 
+import android.app.SearchManager;
+import android.app.SearchableInfo;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import zjj.app.newsclient.R;
+import zjj.app.newsclient.activities.SearchActivity;
 import zjj.app.newsclient.adapters.NewsPagerAdapter;
 import zjj.app.newsclient.base.BaseFragment;
 
@@ -42,6 +49,8 @@ public class NewsListFragment extends BaseFragment {
     @Override
     protected View initView(LayoutInflater inflater) {
         View view = inflater.inflate(R.layout.fragment_news_list, null);
+        //使得Fragment中的ToolBar也能显示菜单
+        setHasOptionsMenu(true);
 
         toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         tab_layout = (TabLayout) view.findViewById(R.id.tab_layout);
@@ -85,14 +94,15 @@ public class NewsListFragment extends BaseFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.home, menu);
+
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
-            Snackbar.make(root_view, "Settings", Snackbar.LENGTH_SHORT).show();
+        if (id == R.id.action_search) {
+            startActivity(new Intent(context, SearchActivity.class));
             return true;
         }
 

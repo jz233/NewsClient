@@ -34,7 +34,6 @@ import zjj.app.newsclient.utils.URLUtils;
 
 public class HomeActivity extends BaseActivity implements View.OnClickListener {
 
-    private NewsClientListener listener;
     private FragmentManager fm;
     private final static int TYPE_FOCUSES = 0;
     private final static int TYPE_NEWEST = 1;
@@ -163,47 +162,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
             setCheckedFragment(TYPE_ME);
         }
     }
-
-    public interface NewsClientListener {
-        void OnNewsListResponse(NewsList newsList);
-    }
-
-    public void getNewsRequest(String baseUrl, TreeMap<String, String> paramMap, final NewsClientListener listener) {
-        String url = URLUtils.getUrl(baseUrl, paramMap);
-
-        if (BuildConfig.DEBUG) Log.d("HomeActivity", url);
-        StringRequest request = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        if (BuildConfig.DEBUG) Log.d("NewsClient", response);
-                        NewsList newsList = new Gson().fromJson(response, NewsList.class);
-                        listener.OnNewsListResponse(newsList);
-
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(HomeActivity.this, "network error", Toast.LENGTH_SHORT).show();
-                Log.d("NewsClient", "network error");
-                if (error != null) {
-                    Log.d("NewsClient", error.getMessage());
-                }
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("apikey", Constant.APIKEY);
-
-                return headers;
-            }
-        };
-
-        BaseApplication.getInstance().getRequestQueue().add(request);
-    }
-
-
 
     private void handleFragments(int type) {
         FragmentTransaction transaction = fm.beginTransaction();

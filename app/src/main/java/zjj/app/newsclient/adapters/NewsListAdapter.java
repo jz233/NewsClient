@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
@@ -51,7 +52,6 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsIt
         }else{
             holder.niv_thumb.setImageUrl(urls.get(0).getUrl(), imageLoader);
         }
-        if (BuildConfig.DEBUG) Log.d("NewsListAdapter", "imageLoader:" + imageLoader);
     }
 
     @Override
@@ -69,6 +69,13 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsIt
             niv_thumb = (NetworkImageView) itemView.findViewById(R.id.niv_thumb);
             tv_title = (TextView) itemView.findViewById(R.id.tv_title);
             tv_date = (TextView) itemView.findViewById(R.id.tv_date);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(context, tv_title.getText().toString().trim(), Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 }

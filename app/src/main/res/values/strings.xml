@@ -1,11 +1,11 @@
 <resources>
-    <string name="app_name">NewsClient</string>
-
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="app_name">新闻头条</string>
 
     <string name="action_settings">Settings</string>
+    <string name="action_search">Search</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="search_hint">please input</string>
+    <string name="app_label">Search Widget</string>
 </resources>
