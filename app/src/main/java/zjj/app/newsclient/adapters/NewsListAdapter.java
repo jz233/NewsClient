@@ -1,6 +1,7 @@
 package zjj.app.newsclient.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -16,6 +17,7 @@ import java.util.List;
 
 import zjj.app.newsclient.BuildConfig;
 import zjj.app.newsclient.R;
+import zjj.app.newsclient.activities.NewsDetailsActivity;
 import zjj.app.newsclient.base.BaseApplication;
 import zjj.app.newsclient.domain.NewsList;
 
@@ -73,7 +75,10 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsIt
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(context, tv_title.getText().toString().trim(), Toast.LENGTH_SHORT).show();
+                    NewsList.ShowapiResBodyBean.PagebeanBean.ContentlistBean bean = list.get(getAdapterPosition());
+                    Intent intent = new Intent(context, NewsDetailsActivity.class);
+                    intent.putExtra("bean", bean);
+                    context.startActivity(intent);
                 }
             });
         }

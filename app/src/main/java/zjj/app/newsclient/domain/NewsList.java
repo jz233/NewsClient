@@ -1,5 +1,9 @@
 package zjj.app.newsclient.domain;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class NewsList {
@@ -122,7 +126,7 @@ public class NewsList {
                         '}';
             }
 
-            public static class ContentlistBean {
+            public static class ContentlistBean implements Parcelable {
                 private String pubDate;
                 private String title;
                 private String channelName;
@@ -221,7 +225,8 @@ public class NewsList {
                             '}';
                 }
 
-                public static class ImageurlsBean {
+                public static class ImageurlsBean implements Parcelable {
+
                     private int height;
                     private int width;
                     private String url;
@@ -249,7 +254,86 @@ public class NewsList {
                     public void setUrl(String url) {
                         this.url = url;
                     }
+
+                    @Override
+                    public int describeContents() {
+                        return 0;
+                    }
+
+                    @Override
+                    public void writeToParcel(Parcel dest, int flags) {
+                        dest.writeInt(this.height);
+                        dest.writeInt(this.width);
+                        dest.writeString(this.url);
+                    }
+
+                    public ImageurlsBean() {
+                    }
+
+                    protected ImageurlsBean(Parcel in) {
+                        this.height = in.readInt();
+                        this.width = in.readInt();
+                        this.url = in.readString();
+                    }
+
+                    public static final Creator<ImageurlsBean> CREATOR = new Creator<ImageurlsBean>() {
+                        @Override
+                        public ImageurlsBean createFromParcel(Parcel source) {
+                            return new ImageurlsBean(source);
+                        }
+
+                        @Override
+                        public ImageurlsBean[] newArray(int size) {
+                            return new ImageurlsBean[size];
+                        }
+                    };
                 }
+
+                @Override
+                public int describeContents() {
+                    return 0;
+                }
+
+                @Override
+                public void writeToParcel(Parcel dest, int flags) {
+                    dest.writeString(this.pubDate);
+                    dest.writeString(this.title);
+                    dest.writeString(this.channelName);
+                    dest.writeString(this.desc);
+                    dest.writeString(this.source);
+                    dest.writeString(this.channelId);
+                    dest.writeString(this.link);
+                    dest.writeString(this.html);
+                    dest.writeList(this.imageurls);
+                }
+
+                public ContentlistBean() {
+                }
+
+                protected ContentlistBean(Parcel in) {
+                    this.pubDate = in.readString();
+                    this.title = in.readString();
+                    this.channelName = in.readString();
+                    this.desc = in.readString();
+                    this.source = in.readString();
+                    this.channelId = in.readString();
+                    this.link = in.readString();
+                    this.html = in.readString();
+                    this.imageurls = new ArrayList<ImageurlsBean>();
+                    in.readList(this.imageurls, ImageurlsBean.class.getClassLoader());
+                }
+
+                public static final Parcelable.Creator<ContentlistBean> CREATOR = new Parcelable.Creator<ContentlistBean>() {
+                    @Override
+                    public ContentlistBean createFromParcel(Parcel source) {
+                        return new ContentlistBean(source);
+                    }
+
+                    @Override
+                    public ContentlistBean[] newArray(int size) {
+                        return new ContentlistBean[size];
+                    }
+                };
             }
         }
     }

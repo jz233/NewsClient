@@ -24,17 +24,21 @@ public class NewsPagerFragment extends BaseFragment {
 
     private RecyclerView rv_news_list;
     private NewsListAdapter adapter;
-    private String channelId;
-    private String age;
     private SwipeRefreshLayout swipe_refresh_layout;
 
     public NewsPagerFragment(){}
 
     public static NewsPagerFragment newInstance(String channelId, String page){
+        return newInstance(channelId, page, "0", "0");
+    }
+
+    public static NewsPagerFragment newInstance(String channelId, String page, String needContent, String needHtml){
         NewsPagerFragment fragment = new NewsPagerFragment();
         Bundle args = new Bundle();
         args.putString("channelId", channelId);
         args.putString("page", page);
+        args.putString("needContent", needContent);
+        args.putString("needHtml", needHtml);
         fragment.setArguments(args);
 
         return fragment;
@@ -85,10 +89,14 @@ public class NewsPagerFragment extends BaseFragment {
         Bundle args = getArguments();
         String channelId = args.getString("channelId", "5572a109b3cdc86cf39001db");
         String page = args.getString("page", "1");
+        String needContent = args.getString("needContent", "0");
+        String needHtml = args.getString("needHtml", "0");
 
         TreeMap<String, String> params = new TreeMap<>();
         params.put("channelId", channelId);
         params.put("page", page);
+        params.put("needContent", needContent);
+        params.put("needHtml",needHtml);
 
         return params;
     }

@@ -35,11 +35,11 @@ public class NewsPagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return NewsPagerFragment.newInstance(domesticId, "1");
+                return NewsPagerFragment.newInstance(domesticId, "1", "0", "1");
             case 1:
-                return NewsPagerFragment.newInstance(internationalId, "1");
+                return NewsPagerFragment.newInstance(internationalId, "1", "0", "1");
             case 2:
-                return NewsPagerFragment.newInstance(eduId, "1");
+                return NewsPagerFragment.newInstance(eduId, "1", "0", "1");
         }
         return DefaultFragment.newInstance();
     }
