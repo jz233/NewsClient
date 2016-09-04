@@ -96,6 +96,8 @@ public class SearchActivity extends BaseActivity {
         TreeMap<String, String> params = new TreeMap<>();
         params.put("page", "1");
         params.put("title", query);
+        params.put("needContent", "0");
+        params.put("needHtml", "1");
         return params;
     }
 
