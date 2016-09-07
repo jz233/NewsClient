@@ -7,11 +7,15 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.integration.okhttp3.OkHttpGlideModule;
 
 import java.util.List;
 
@@ -23,14 +27,12 @@ import zjj.app.newsclient.domain.NewsList;
 
 public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsItemHolder>{
 
-    private final ImageLoader imageLoader;
     private Context context;
     private List<NewsList.ShowapiResBodyBean.PagebeanBean.ContentlistBean> list;
 
     public NewsListAdapter(Context context, NewsList newsList) {
         this.context = context;
         list = newsList.getShowapi_res_body().getPagebean().getContentlist();
-        imageLoader = BaseApplication.getInstance().getImageLoader();
     }
 
     @Override
@@ -48,11 +50,15 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsIt
         holder.tv_date.setText(bean.getPubDate());
 
         if(urls == null || urls.size() == 0){
-            holder.niv_thumb.setImageUrl("https://www.showapi.com/images/provide_left.png", imageLoader);
+            holder.iv_thumb.setImageResource(R.drawable.blank);
         }else if(TextUtils.isEmpty(urls.get(0).getUrl())){
-            holder.niv_thumb.setImageUrl("https://www.showapi.com/images/provide_left.png", imageLoader);
+            holder.iv_thumb.setImageResource(R.drawable.blank);
         }else{
-            holder.niv_thumb.setImageUrl(urls.get(0).getUrl(), imageLoader);
+            Glide.with(holder.iv_thumb.getContext())
+                    .load(urls.get(0).getUrl())
+                    .error(R.drawable.blank)
+                    .placeholder(R.drawable.loading)
+                    .into(holder.iv_thumb);
         }
     }
 
@@ -63,12 +69,12 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsIt
 
     class NewsItemHolder extends RecyclerView.ViewHolder{
 
-        public NetworkImageView niv_thumb;
+        public ImageView iv_thumb;
         public TextView tv_title;
         public TextView tv_date;
         public NewsItemHolder(View itemView) {
             super(itemView);
-            niv_thumb = (NetworkImageView) itemView.findViewById(R.id.niv_thumb);
+            iv_thumb = (ImageView) itemView.findViewById(R.id.iv_thumb);
             tv_title = (TextView) itemView.findViewById(R.id.tv_title);
             tv_date = (TextView) itemView.findViewById(R.id.tv_date);
 

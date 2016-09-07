@@ -90,8 +90,9 @@ public class BaseApplication extends Application {
                 List<Channels.ShowapiResBodyBean.ChannelListBean> list = channels.getShowapi_res_body().getChannelList();
                 SharedPreferences.Editor editor = SharedPreferencesUtils.getEditor(getApplicationContext());
                 for(Channels.ShowapiResBodyBean.ChannelListBean item : list){
-                    editor.putString(item.getName(), item.getChannelId()).apply();
+                    editor = editor.putString(item.getName(), item.getChannelId());
                 }
+                editor.apply();
 
             }
         }, new Response.ErrorListener() {

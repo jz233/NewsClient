@@ -10,17 +10,23 @@
         android:layout_marginLeft="12dp"
         android:layout_marginRight="12dp">
 
-        <com.android.volley.toolbox.NetworkImageView
+       <!-- <com.android.volley.toolbox.NetworkImageView
             android:id="@+id/niv_thumb"
             android:layout_width="70dp"
             android:layout_height="70dp"
-            android:layout_centerVertical="true" />
+            android:layout_centerVertical="true" />-->
+        <ImageView
+            android:id="@+id/iv_thumb"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:src="@drawable/ic_menu_gallery"
+            android:layout_centerVertical="true"/>
 
         <LinearLayout
             android:layout_marginLeft="10dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_toRightOf="@id/niv_thumb"
+            android:layout_toRightOf="@id/iv_thumb"
             android:gravity="center_vertical"
             android:orientation="vertical">
 

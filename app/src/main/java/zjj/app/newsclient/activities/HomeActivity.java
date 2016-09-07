@@ -1,5 +1,6 @@
 package zjj.app.newsclient.activities;
 
+import android.content.SharedPreferences;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -17,19 +18,26 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.google.gson.Gson;
 
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import okhttp3.Call;
+import okhttp3.Callback;
 import zjj.app.newsclient.BuildConfig;
 import zjj.app.newsclient.R;
+import zjj.app.newsclient.base.AppController;
 import zjj.app.newsclient.base.BaseActivity;
 import zjj.app.newsclient.base.BaseApplication;
 import zjj.app.newsclient.base.BaseFragment;
+import zjj.app.newsclient.domain.Channels;
 import zjj.app.newsclient.domain.NewsList;
 import zjj.app.newsclient.fragments.DefaultFragment;
 import zjj.app.newsclient.fragments.NewsListFragment;
 import zjj.app.newsclient.utils.Constant;
+import zjj.app.newsclient.utils.SharedPreferencesUtils;
 import zjj.app.newsclient.utils.URLUtils;
 
 public class HomeActivity extends BaseActivity implements View.OnClickListener {
@@ -58,10 +66,13 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
     @Override
     public void initView() {
         setContentView(R.layout.activity_home);
+
+
         fm = getSupportFragmentManager();
         setupBottomNavBar();
 
         setCheckedFragment(TYPE_FOCUSES);
+
     }
 
     private void setupBottomNavBar() {
