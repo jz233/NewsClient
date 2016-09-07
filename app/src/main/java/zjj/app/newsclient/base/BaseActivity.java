@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2016.
+ * Jason Zhang
+ * All Rights Reserved
+ */
+
 package zjj.app.newsclient.base;
 
 import android.content.Context;

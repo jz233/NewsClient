@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2016.
+  ~ Jason Zhang
+  ~ All Rights Reserved
+  -->
+
 <resources>
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>

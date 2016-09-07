@@ -1,3 +1,9 @@
+<!--
+  ~ Copyright (c) 2016.
+  ~ Jason Zhang
+  ~ All Rights Reserved
+  -->
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/ll_bottom_nav"
     android:layout_width="match_parent"
