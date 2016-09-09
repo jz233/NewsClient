@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2016.
+  ~ Jason Zhang
+  ~ All Rights Reserved
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:client="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/layout_appbar"
+        layout="@layout/layout_appbar" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <zjj.app.newsclient.ui.MySettingView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            client:setting_icon="@drawable/ic_menu_recent"
+            client:setting_title="最近看过" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="60dp"
+            android:background="@color/light_gray" />
+    </LinearLayout>
+
+</LinearLayout>

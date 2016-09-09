@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2016.
+  ~ Jason Zhang
+  ~ All Rights Reserved
+  -->
+
+<resources>
+    <declare-styleable name="MySettingView">
+        <attr name="setting_title" format="string"/>
+        <attr name="setting_icon" format="integer"/>
+    </declare-styleable>
+</resources>

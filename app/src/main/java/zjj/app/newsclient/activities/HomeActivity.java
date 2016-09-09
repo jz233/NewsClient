@@ -41,6 +41,7 @@ import zjj.app.newsclient.base.BaseFragment;
 import zjj.app.newsclient.domain.Channels;
 import zjj.app.newsclient.domain.NewsList;
 import zjj.app.newsclient.fragments.DefaultFragment;
+import zjj.app.newsclient.fragments.MeFragment;
 import zjj.app.newsclient.fragments.NewsListFragment;
 import zjj.app.newsclient.utils.Constant;
 import zjj.app.newsclient.utils.SharedPreferencesUtils;
@@ -237,7 +238,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
                 if(meFragment != null){
                     transaction.show(meFragment).commit();
                 }else{
-                    transaction.add(R.id.fragment_container, DefaultFragment.newInstance(), "MeFragment").commit();
+                    transaction.add(R.id.fragment_container, MeFragment.newInstance(), "MeFragment").commit();
                 }
                 break;
         }
