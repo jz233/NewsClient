@@ -66,7 +66,7 @@ public class NewsPagerFragment extends BaseFragment {
         View view = inflater.inflate(R.layout.fragment_newspager, null);
         rv_news_list = (RecyclerView) view.findViewById(R.id.rv_news_list);
         rv_news_list.setLayoutManager(new LinearLayoutManager(context));
-        rv_news_list.addItemDecoration(new VerticalSpaceItemDecoration(10));
+        rv_news_list.addItemDecoration(new VerticalSpaceItemDecoration(3));
         swipe_refresh_layout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
         swipe_refresh_layout.setColorSchemeResources(R.color.colorPrimary);
 

@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -38,25 +39,36 @@ import zjj.app.newsclient.utils.SharedPreferencesUtils;
 
 public class AppController extends Application {
 
-    private static final OkHttpClient client = new OkHttpClient();
+    private static OkHttpClient client = null;
     private static AppController instance;
 
     @Override
     public void onCreate() {
         super.onCreate();
         instance = this;
-        Glide.get(this).register(GlideUrl.class, InputStream.class, new OkHttpUrlLoader.Factory(client));
+        Glide.get(this).register(GlideUrl.class, InputStream.class, new OkHttpUrlLoader.Factory(getClient()));
     }
 
     public static synchronized AppController getInstance(){return instance;}
     public static synchronized OkHttpClient getClient() {
+        if(client == null){
+            synchronized (AppController.class){
+                if(client == null){
+                    client = new OkHttpClient.Builder()
+                            .readTimeout(5000, TimeUnit.MILLISECONDS)
+                            .connectTimeout(5000, TimeUnit.MILLISECONDS)
+                            .retryOnConnectionFailure(true)
+                            .build();
+                }
+            }
+        }
         return client;
     }
 
     public void enqueueGetRequest(TreeMap<String, String> params, Callback callback) {
         HttpUrl url = composeUrl(params);
         Request request = new Request.Builder().get().url(url).addHeader("apikey", Constant.APIKEY).build();
-        client.newCall(request).enqueue(callback);
+        getClient().newCall(request).enqueue(callback);
     }
 
     private void executeGetRequest() {
@@ -83,7 +95,7 @@ public class AppController extends Application {
                 .url("http://apis.baidu.com/showapi_open_bus/channel_news/channel_news")
                 .addHeader("apikey", Constant.APIKEY)
                 .build();
-        client.newCall(request).enqueue(callback);
+        getClient().newCall(request).enqueue(callback);
 
     }
 

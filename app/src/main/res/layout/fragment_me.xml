@@ -20,10 +20,13 @@
         android:orientation="vertical">
 
         <zjj.app.newsclient.ui.MySettingView
+            android:id="@+id/sv_recent"
+            android:focusableInTouchMode="true"
+            android:focusable="true"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="45dp"
             client:setting_icon="@drawable/ic_menu_recent"
-            client:setting_title="最近看过" />
+            client:setting_title="最近浏览" />
 
         <View
             android:layout_width="match_parent"

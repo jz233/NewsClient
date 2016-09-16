@@ -9,6 +9,7 @@ package zjj.app.newsclient.ui;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -56,6 +57,5 @@ public class MySettingView extends RelativeLayout {
     private void setSettingIcon(int iconRes){
         iv_setting_icon.setImageResource(iconRes);
     }
-
 
 }

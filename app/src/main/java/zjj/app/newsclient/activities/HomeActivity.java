@@ -6,11 +6,25 @@
 
 package zjj.app.newsclient.activities;
 
+import android.Manifest;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Criteria;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.location.LocationProvider;
+import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -41,6 +55,7 @@ import zjj.app.newsclient.base.BaseFragment;
 import zjj.app.newsclient.domain.Channels;
 import zjj.app.newsclient.domain.NewsList;
 import zjj.app.newsclient.fragments.DefaultFragment;
+import zjj.app.newsclient.fragments.FavFragment;
 import zjj.app.newsclient.fragments.MeFragment;
 import zjj.app.newsclient.fragments.NewsListFragment;
 import zjj.app.newsclient.utils.Constant;
@@ -68,6 +83,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
     private TextView tv_newest;
     private TextView tv_favorite;
     private Fragment currentFragment = null;
+    private LocationManager lm;
+    private Geocoder geocoder;
 
 
     @Override
@@ -110,7 +127,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     public void initData() {
-
     }
 
     /**
@@ -164,8 +180,56 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         tv_me.setTextColor(getResources().getColor(R.color.light_gray));
     }
 
+    public void getLocation() {
+        geocoder = new Geocoder(context);
+        lm = (LocationManager) getSystemService(LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+        criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+        criteria.setAltitudeRequired(false);
+        criteria.setBearingAccuracy(Criteria.ACCURACY_HIGH);
+        criteria.setCostAllowed(false);
+        criteria.setPowerRequirement(Criteria.POWER_LOW);
 
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        LocationListener listener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                if(location != null){
+//                        List<Address> addr = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                    if (BuildConfig.DEBUG) Log.d("HomeActivity", String.valueOf(location.getLatitude()));
 
+                }else{
+                    if (BuildConfig.DEBUG) Log.d("HomeActivity", "location is null");
+                }
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+
+            }
+        };
+        lm.requestLocationUpdates(lm.getBestProvider(criteria, true), 1000, 0, listener);
+        Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        if(location != null){
+            if (BuildConfig.DEBUG)
+                Log.d("HomeActivity", "location.getLatitude():" + location.getLatitude());
+        }else{
+            if (BuildConfig.DEBUG) Log.d("HomeActivity", "location == null");
+        }
+//        lm.requestSingleUpdate(criteria, listener, null);
+    }
 
     @Override
     public void onClick(View v) {
@@ -185,8 +249,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         FragmentTransaction transaction = fm.beginTransaction();
         NewsListFragment focusesFragment = (NewsListFragment) fm.findFragmentByTag("FocusesFragment");
         NewsListFragment newestFragment = (NewsListFragment) fm.findFragmentByTag("NewestFragment");
-        BaseFragment favoritesFragment = (BaseFragment) fm.findFragmentByTag("FavoritesFragment");
-        BaseFragment meFragment = (BaseFragment) fm.findFragmentByTag("MeFragment");
+        FavFragment favoritesFragment = (FavFragment) fm.findFragmentByTag("FavoritesFragment");
+        MeFragment meFragment = (MeFragment) fm.findFragmentByTag("MeFragment");
 
         switch (type){
             case TYPE_FOCUSES:
@@ -225,7 +289,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
                 if(favoritesFragment != null){
                     transaction.show(favoritesFragment).commit();
                 }else{
-                    transaction.add(R.id.fragment_container, DefaultFragment.newInstance(), "FavoritesFragment").commit();
+                    transaction.add(R.id.fragment_container, FavFragment.newInstance(), "FavoritesFragment").commit();
                 }
                 break;
             case TYPE_ME:

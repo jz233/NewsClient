@@ -6,18 +6,23 @@
 
 package zjj.app.newsclient.fragments;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 
 import zjj.app.newsclient.R;
+import zjj.app.newsclient.activities.RecentActivity;
 import zjj.app.newsclient.base.BaseFragment;
+import zjj.app.newsclient.ui.MySettingView;
 
-public class MeFragment extends BaseFragment {
+public class MeFragment extends BaseFragment implements View.OnClickListener {
 
     private Toolbar toolbar;
     private ActionBar actionBar;
+    private MySettingView sv_recent;
+
 
     public MeFragment() {
     }
@@ -35,16 +40,26 @@ public class MeFragment extends BaseFragment {
         actionBar = context.getSupportActionBar();
         actionBar.setTitle("我");
 
+        sv_recent = (MySettingView) view.findViewById(R.id.sv_recent);
+
         return view;
     }
 
     @Override
     protected void initListener() {
-
+        sv_recent.setOnClickListener(this);
     }
 
     @Override
     protected void initData() {
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+        if(R.id.sv_recent == id){
+            startActivity(new Intent(context, RecentActivity.class));
+        }
     }
 }

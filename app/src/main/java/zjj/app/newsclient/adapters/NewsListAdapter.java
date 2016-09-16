@@ -55,13 +55,12 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsIt
         holder.tv_title.setText(bean.getTitle());
         holder.tv_date.setText(bean.getPubDate());
 
-        if(urls == null || urls.size() == 0){
-            holder.iv_thumb.setImageResource(R.drawable.blank);
-        }else if(TextUtils.isEmpty(urls.get(0).getUrl())){
+        if(urls == null || urls.size() == 0||TextUtils.isEmpty(urls.get(0).getUrl())){
             holder.iv_thumb.setImageResource(R.drawable.blank);
         }else{
             Glide.with(holder.iv_thumb.getContext())
                     .load(urls.get(0).getUrl())
+                    .asBitmap()                         //gif强转静态
                     .error(R.drawable.blank)
                     .placeholder(R.drawable.loading)
                     .into(holder.iv_thumb);

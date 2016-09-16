@@ -22,11 +22,18 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.gson.Gson;
+
+import java.io.IOException;
 import java.util.TreeMap;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 import zjj.app.newsclient.BuildConfig;
 import zjj.app.newsclient.R;
 import zjj.app.newsclient.adapters.SearchResultsAdapter;
+import zjj.app.newsclient.base.AppController;
 import zjj.app.newsclient.base.BaseActivity;
 import zjj.app.newsclient.base.BaseApplication;
 import zjj.app.newsclient.domain.NewsList;
@@ -53,7 +60,7 @@ public class SearchActivity extends BaseActivity {
 
         rv_search_results = (RecyclerView) findViewById(R.id.rv_search_results);
         rv_search_results.setLayoutManager(new LinearLayoutManager(this));
-        rv_search_results.addItemDecoration(new VerticalSpaceItemDecoration(10));
+        rv_search_results.addItemDecoration(new VerticalSpaceItemDecoration(5));
 
         swipe_refresh_layout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
         swipe_refresh_layout.setColorSchemeResources(R.color.colorPrimary);
@@ -83,13 +90,25 @@ public class SearchActivity extends BaseActivity {
 
             swipe_refresh_layout.setRefreshing(true);
             TreeMap<String, String> params = getRequestParams(query);
-            BaseApplication.getInstance().getJsonStringRequest(this, Constant.BASE_URL, params, "SearchNews", new BaseApplication.NewsClientListener() {
+            AppController.getInstance().enqueueGetRequest(params, new Callback() {
                 @Override
-                public void OnNewsListResponse(NewsList newsList) {
-                    swipe_refresh_layout.setRefreshing(false);
-                    adapter = new SearchResultsAdapter(SearchActivity.this, newsList);
-                    rv_search_results.setAdapter(adapter);
+                public void onFailure(Call call, IOException e) {
 
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    String body = response.body().string();
+                    final NewsList newsList = new Gson().fromJson(body, NewsList.class);
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            swipe_refresh_layout.setRefreshing(false);
+                            adapter = new SearchResultsAdapter(SearchActivity.this, newsList);
+                            rv_search_results.setAdapter(adapter);
+                        }
+                    });
                 }
             });
 

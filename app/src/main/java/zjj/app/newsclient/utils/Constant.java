@@ -20,4 +20,7 @@ public class Constant {
     public final static String[] FOCUSES = {"国内焦点","国际焦点","体育焦点"};
     public final static String[] NEWESTS = {"国内最新","国际最新","体育最新"};
 
+
+    public final static String TABLE_RECENT = "recent";
+
 }
