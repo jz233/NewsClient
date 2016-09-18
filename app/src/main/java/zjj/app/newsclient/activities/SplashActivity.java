@@ -71,8 +71,8 @@ public class SplashActivity extends BaseActivity {
             @Override
             public void onResponse(Call call, okhttp3.Response response) throws IOException {
                 String responseBody = response.body().string();
-                if (BuildConfig.DEBUG)
-                    Log.d("AppController", "response:" + responseBody);
+                /*if (BuildConfig.DEBUG)
+                    Log.d("AppController", "response:" + responseBody);*/
 
                 Channels channels = new Gson().fromJson(responseBody, Channels.class);
                 List<Channels.ShowapiResBodyBean.ChannelListBean> list = channels.getShowapi_res_body().getChannelList();

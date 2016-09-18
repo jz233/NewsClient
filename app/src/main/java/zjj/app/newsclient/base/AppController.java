@@ -46,7 +46,9 @@ public class AppController extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
+
         Glide.get(this).register(GlideUrl.class, InputStream.class, new OkHttpUrlLoader.Factory(getClient()));
+
     }
 
     public static synchronized AppController getInstance(){return instance;}

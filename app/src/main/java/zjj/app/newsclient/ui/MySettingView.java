@@ -7,9 +7,9 @@
 package zjj.app.newsclient.ui;
 
 import android.content.Context;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -32,7 +32,12 @@ public class MySettingView extends RelativeLayout {
         initView(context);
 
         String title = attrs.getAttributeValue("http://schemas.android.com/apk/res-auto", "setting_title");
-        int iconRes = attrs.getAttributeResourceValue("http://schemas.android.com/apk/res-auto", "setting_icon", R.drawable.ic_menu_recent_img);
+        int iconRes;
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            iconRes = attrs.getAttributeResourceValue("http://schemas.android.com/apk/res-auto", "setting_icon", R.drawable.ic_menu_recent);
+        }else{
+            iconRes = attrs.getAttributeResourceValue("http://schemas.android.com/apk/res-auto", "setting_icon", R.drawable.ic_menu_recent);
+        }
         setSettingTitle(title);
         setSettingIcon(iconRes);
     }

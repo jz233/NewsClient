@@ -27,9 +27,10 @@
             android:focusable="false"
             android:id="@+id/ib_focuses"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="30dp"
+            android:scaleType="fitCenter"
             android:background="@android:color/transparent"
-            android:src="@drawable/focuses_selector"/>
+            android:src="@drawable/selector_focuses"/>
 
         <TextView
             android:id="@+id/tv_focuses"
@@ -53,9 +54,10 @@
             android:focusable="false"
             android:id="@+id/ib_newest"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="30dp"
+            android:scaleType="fitCenter"
             android:background="@android:color/transparent"
-            android:src="@drawable/newest_selector" />
+            android:src="@drawable/selector_newest" />
 
         <TextView
             android:id="@+id/tv_newest"
@@ -79,9 +81,10 @@
             android:focusable="false"
             android:id="@+id/ib_favorite"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="30dp"
+            android:scaleType="fitCenter"
             android:background="@android:color/transparent"
-            android:src="@drawable/favorite_selector" />
+            android:src="@drawable/selector_favorite" />
 
         <TextView
             android:id="@+id/tv_favorite"
@@ -106,8 +109,9 @@
             android:id="@+id/ib_me"
             android:background="@android:color/transparent"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/person_selector" />
+            android:layout_height="30dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/selector_me" />
 
         <TextView
             android:id="@+id/tv_me"

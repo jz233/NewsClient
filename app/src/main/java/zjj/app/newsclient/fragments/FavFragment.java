@@ -29,6 +29,14 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
+import com.baidu.location.Poi;
+
+import java.util.List;
+
 import zjj.app.newsclient.BuildConfig;
 import zjj.app.newsclient.R;
 import zjj.app.newsclient.activities.RecentActivity;
@@ -41,10 +49,39 @@ public class FavFragment extends BaseFragment {
     private Toolbar toolbar;
     private ActionBar actionBar;
     private LinearLayout root_view;
-    private MySettingView sv_recent;
-    private Geocoder geocoder;
-    private LocationManager lm;
     private Button btn_getLocation;
+    private LocationClient client;
+    private BDLocationListener listener;
+    private LocationClientOption option;
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (BuildConfig.DEBUG) Log.d("FavFragment", "onResume");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (BuildConfig.DEBUG) Log.d("FavFragment", "onStop");
+
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (BuildConfig.DEBUG) Log.d("FavFragment", "onDestroyView");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (BuildConfig.DEBUG) Log.d("FavFragment", "onDestroy");
+        if(listener != null){
+            client.unRegisterLocationListener(listener);
+            listener = null;
+        }
+    }
 
     public FavFragment() {
     }
@@ -70,18 +107,30 @@ public class FavFragment extends BaseFragment {
 
     @Override
     protected void initListener() {
+
+        client = new LocationClient(getActivity().getApplicationContext());
+        if(listener == null){
+            listener = new MyLocationListener();
+            client.registerLocationListener(listener);
+        }
+
         btn_getLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!client.isStarted()){
+                    client.start();
+                }
                 if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
                     if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        Toast.makeText(context, "requestLocationPermissions", Toast.LENGTH_SHORT).show();
                         requestLocationPermissions();
                         return;
                     }else{
                         getLocation();
                     }
+                }else{
+                    getLocation();
                 }
-//                getLocation();
             }
         });
     }
@@ -91,63 +140,41 @@ public class FavFragment extends BaseFragment {
 
     }
 
+    private class MyLocationListener implements BDLocationListener {
+
+        @Override
+        public void onReceiveLocation(BDLocation location) {
+            StringBuffer sb = new StringBuffer(256);
+            sb.append("time : ");
+            sb.append(location.getTime());
+            sb.append("\nerror code : ");
+            sb.append(location.getLocType());
+            sb.append("\nlatitude : ");
+            sb.append(location.getLatitude());
+            sb.append("\nlontitude : ");
+            sb.append(location.getLongitude());
+            sb.append("\ncity : ");
+            sb.append(location.getCity());
+            Log.d("FavFragment", sb.toString());
+
+        }
+    }
+
 
     public void getLocation() {
-        geocoder = new Geocoder(context);
-        lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        Criteria criteria = new Criteria();
-        criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+        option = new LocationClientOption();
+        option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);
+        option.setIsNeedAddress(true);
 
-       /* LocationListener listener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                if (location != null) {
-//                        List<Address> addr = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-                    if (BuildConfig.DEBUG)
-                        Log.d("FavFragment", String.valueOf(location.getLatitude()));
-                    Toast.makeText(context, String.valueOf(location.getLatitude()), Toast.LENGTH_SHORT).show();
-                } else {
-                    if (BuildConfig.DEBUG) Log.d("FavFragment", "location is null");
-                    Toast.makeText(context, "location is null", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String provider) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-
-            }
-        };
-
-        lm.requestLocationUpdates(lm.getBestProvider(criteria, true), 1000, 0, listener);*/
-        Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-        if(location != null){
-            if (BuildConfig.DEBUG)
-                Log.d("FavFragment", "location.getLatitude():" + location.getLatitude());
-            Toast.makeText(context, String.valueOf(location.getLatitude()), Toast.LENGTH_SHORT).show();
-        }else{
-            if (BuildConfig.DEBUG) Log.d("FavFragment", "location == null");
-            Toast.makeText(context, "location is null", Toast.LENGTH_SHORT).show();
-        }
-//        lm.requestSingleUpdate(criteria, listener, null);
-
+        client.setLocOption(option);
+        client.start();
     }
 
 
     private void requestLocationPermissions() {
         if(shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION)||
                 shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)){
-            Snackbar.make(root_view, "my permission ...", Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+            Snackbar.make(root_view, "You need grant the permissions", Snackbar.LENGTH_INDEFINITE).setAction("GO", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,  Manifest.permission.ACCESS_COARSE_LOCATION}, BAIDU_SDK_PERMISSION);
@@ -164,21 +191,12 @@ public class FavFragment extends BaseFragment {
             case BAIDU_SDK_PERMISSION:
                 if(grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                     Toast.makeText(context, "got it!", Toast.LENGTH_SHORT).show();
-//                    Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-//
-//                    if(location != null){
-//                        if (BuildConfig.DEBUG)
-//                            Log.d("FavFragment", "location.getLatitude():" + location.getLatitude());
-//                        Toast.makeText(context, String.valueOf(location.getLatitude()), Toast.LENGTH_SHORT).show();
-//                    }else{
-//                        if (BuildConfig.DEBUG) Log.d("FavFragment", "location == null");
-//                        Toast.makeText(context, "location is null", Toast.LENGTH_SHORT).show();
-//                    }
                 }else{
-                    Toast.makeText(context, "权限不足，请打开位置权限", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "权限不足，请后台打开位置权限", Toast.LENGTH_SHORT).show();
 
                 }
                 break;
         }
     }
+
 }

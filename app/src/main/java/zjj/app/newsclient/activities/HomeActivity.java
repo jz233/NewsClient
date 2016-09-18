@@ -83,14 +83,11 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
     private TextView tv_newest;
     private TextView tv_favorite;
     private Fragment currentFragment = null;
-    private LocationManager lm;
-    private Geocoder geocoder;
 
 
     @Override
     public void initView() {
         setContentView(R.layout.activity_home);
-
 
         fm = getSupportFragmentManager();
         setupBottomNavBar();
@@ -180,56 +177,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         tv_me.setTextColor(getResources().getColor(R.color.light_gray));
     }
 
-    public void getLocation() {
-        geocoder = new Geocoder(context);
-        lm = (LocationManager) getSystemService(LOCATION_SERVICE);
-        Criteria criteria = new Criteria();
-        criteria.setAccuracy(Criteria.ACCURACY_COARSE);
-        criteria.setAltitudeRequired(false);
-        criteria.setBearingAccuracy(Criteria.ACCURACY_HIGH);
-        criteria.setCostAllowed(false);
-        criteria.setPowerRequirement(Criteria.POWER_LOW);
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        LocationListener listener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                if(location != null){
-//                        List<Address> addr = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-                    if (BuildConfig.DEBUG) Log.d("HomeActivity", String.valueOf(location.getLatitude()));
-
-                }else{
-                    if (BuildConfig.DEBUG) Log.d("HomeActivity", "location is null");
-                }
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String provider) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-
-            }
-        };
-        lm.requestLocationUpdates(lm.getBestProvider(criteria, true), 1000, 0, listener);
-        Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        if(location != null){
-            if (BuildConfig.DEBUG)
-                Log.d("HomeActivity", "location.getLatitude():" + location.getLatitude());
-        }else{
-            if (BuildConfig.DEBUG) Log.d("HomeActivity", "location == null");
-        }
-//        lm.requestSingleUpdate(criteria, listener, null);
-    }
 
     @Override
     public void onClick(View v) {
