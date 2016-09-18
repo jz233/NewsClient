@@ -17,7 +17,12 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -26,6 +31,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -36,6 +42,10 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -65,10 +75,12 @@ import zjj.app.newsclient.utils.URLUtils;
 public class HomeActivity extends BaseActivity implements View.OnClickListener {
 
     private FragmentManager fm;
+    private static final int BAIDU_SDK_PERMISSION = 100;
     private final static int TYPE_FOCUSES = 0;
     private final static int TYPE_NEWEST = 1;
     private final static int TYPE_FAVORITE = 2;
     private final static int TYPE_ME = 3;
+    private FrameLayout fragment_container;
     private LinearLayout ll_focuses;
     private LinearLayout ll_newest;
     private LinearLayout ll_favorite;
@@ -84,11 +96,16 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
     private TextView tv_favorite;
     private Fragment currentFragment = null;
 
+    private LocationClient client;
+    private BDLocationListener listener;
+    private LocationClientOption option;
+    private Handler handler;
+
 
     @Override
     public void initView() {
         setContentView(R.layout.activity_home);
-
+        fragment_container = (FrameLayout) findViewById(R.id.fragment_container);
         fm = getSupportFragmentManager();
         setupBottomNavBar();
 
@@ -120,10 +137,66 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         ll_newest.setOnClickListener(this);
         ll_favorite.setOnClickListener(this);
         ll_me.setOnClickListener(this);
+
+        client =  new LocationClient(getApplicationContext());
+        if(listener == null){
+            listener = new MyLocationListener();
+            client.registerLocationListener(listener);
+        }
     }
 
     @Override
     public void initData() {
+        handler = new Handler(Looper.getMainLooper());
+        if(!client.isStarted())
+            client.start();
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(context, "requestLocationPermissions", Toast.LENGTH_SHORT).show();
+                requestLocationPermissions();
+                return;
+            }else{
+                getLocation();
+            }
+        }else{
+            getLocation();
+        }
+    }
+
+    public void getLocation() {
+        option = new LocationClientOption();
+        option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);
+        option.setIsNeedAddress(true);
+
+        client.setLocOption(option);
+
+    }
+
+    private void requestLocationPermissions() {
+        if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION)||
+                ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.ACCESS_FINE_LOCATION)){
+            Snackbar.make(fragment_container, "You need grant the permissions", Snackbar.LENGTH_INDEFINITE).setAction("GO", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ActivityCompat.requestPermissions(HomeActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,  Manifest.permission.ACCESS_COARSE_LOCATION}, BAIDU_SDK_PERMISSION);
+                }
+            }).show();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode){
+            case BAIDU_SDK_PERMISSION:
+                if(grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    Toast.makeText(context, "got it!", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(context, "权限不足，请后台打开位置权限", Toast.LENGTH_SHORT).show();
+
+                }
+                break;
+        }
     }
 
     /**
@@ -177,6 +250,20 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         tv_me.setTextColor(getResources().getColor(R.color.light_gray));
     }
 
+    private class MyLocationListener implements BDLocationListener {
+
+        @Override
+        public void onReceiveLocation(BDLocation location) {
+            final Snackbar snackbar = Snackbar.make(fragment_container, location.getCity(), Snackbar.LENGTH_INDEFINITE);
+            snackbar.setAction("OK", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    snackbar.dismiss();
+                }
+            }).show();
+
+        }
+    }
 
     @Override
     public void onClick(View v) {
@@ -258,5 +345,12 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         fm.executePendingTransactions();
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(listener != null){
+            client.unRegisterLocationListener(listener);
+            listener = null;
+        }
+    }
 }
