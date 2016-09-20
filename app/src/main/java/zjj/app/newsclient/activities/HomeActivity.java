@@ -7,6 +7,7 @@
 package zjj.app.newsclient.activities;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -27,6 +28,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -78,8 +81,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
     private static final int BAIDU_SDK_PERMISSION = 100;
     private final static int TYPE_FOCUSES = 0;
     private final static int TYPE_NEWEST = 1;
-    private final static int TYPE_FAVORITE = 2;
-    private final static int TYPE_ME = 3;
+    private static final int TYPE_LOCAL = 2;
+    private final static int TYPE_FAVORITE = 3;
+    private final static int TYPE_ME = 4;
     private FrameLayout fragment_container;
     private LinearLayout ll_focuses;
     private LinearLayout ll_newest;
@@ -100,6 +104,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
     private BDLocationListener listener;
     private LocationClientOption option;
     private Handler handler;
+    private ImageButton ib_local;
+    private LinearLayout ll_local;
+    private TextView tv_local;
 
 
     @Override
@@ -116,16 +123,19 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
     private void setupBottomNavBar() {
         ll_focuses = (LinearLayout) findViewById(R.id.ll_focuses);
         ll_newest = (LinearLayout) findViewById(R.id.ll_newest);
+        ll_local = (LinearLayout) findViewById(R.id.ll_local);
         ll_favorite = (LinearLayout) findViewById(R.id.ll_favorite);
         ll_me = (LinearLayout) findViewById(R.id.ll_me);
 
         ib_focuses = (ImageButton) findViewById(R.id.ib_focuses);
         ib_newest = (ImageButton) findViewById(R.id.ib_newest);
+        ib_local = (ImageButton) findViewById(R.id.ib_local);
         ib_favorite = (ImageButton) findViewById(R.id.ib_favorite);
         ib_me = (ImageButton) findViewById(R.id.ib_me);
 
         tv_focuses = (TextView) findViewById(R.id.tv_focuses);
         tv_newest = (TextView) findViewById(R.id.tv_newest);
+        tv_local = (TextView) findViewById(R.id.tv_local);
         tv_favorite = (TextView) findViewById(R.id.tv_favorite);
         tv_me = (TextView) findViewById(R.id.tv_me);
 
@@ -135,21 +145,23 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
     public void initListener() {
         ll_focuses.setOnClickListener(this);
         ll_newest.setOnClickListener(this);
+        ll_local.setOnClickListener(this);
         ll_favorite.setOnClickListener(this);
         ll_me.setOnClickListener(this);
 
+        //百度定位Listener
         client =  new LocationClient(getApplicationContext());
         if(listener == null){
             listener = new MyLocationListener();
             client.registerLocationListener(listener);
         }
+
     }
 
     @Override
     public void initData() {
         handler = new Handler(Looper.getMainLooper());
-        if(!client.isStarted())
-            client.start();
+
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(context, "requestLocationPermissions", Toast.LENGTH_SHORT).show();
@@ -161,15 +173,17 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         }else{
             getLocation();
         }
+
     }
 
     public void getLocation() {
         option = new LocationClientOption();
         option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);
         option.setIsNeedAddress(true);
-
         client.setLocOption(option);
 
+        if(!client.isStarted())
+            client.start();
     }
 
     private void requestLocationPermissions() {
@@ -193,11 +207,45 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
                     Toast.makeText(context, "got it!", Toast.LENGTH_SHORT).show();
                 }else{
                     Toast.makeText(context, "权限不足，请后台打开位置权限", Toast.LENGTH_SHORT).show();
-
                 }
                 break;
         }
     }
+
+
+    private class MyLocationListener implements BDLocationListener {
+
+        @Override
+        public void onReceiveLocation(BDLocation location) {
+            final String city = location.getCity();
+            String lastRememberedCity = SharedPreferencesUtils.getString(context, "city", null);
+            //TODO test if current location is the same with previously stored one
+            if(!TextUtils.isEmpty(city)){
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("设定地点")
+                    .setMessage("当前您位于" + city + ",是否切换到当前城市?")
+                    .setPositiveButton("切换", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            String cityName = city.substring(0, 2);
+//                            Toast.makeText(context, cityName, Toast.LENGTH_SHORT).show();
+                            SharedPreferencesUtils.putString(context, "city", cityName);
+                            dialog.dismiss();
+                        }
+                    })
+                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+
+        }
+    }
+
 
     /**
      *  添加或替换成要显示到前端的Fragment对象
@@ -224,6 +272,10 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
                 ib_newest.setSelected(true);
                 tv_newest.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
                 break;
+            case TYPE_LOCAL:
+                ib_local.setSelected(true);
+                tv_local.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+                break;
             case TYPE_FAVORITE:
                 ib_favorite.setSelected(true);
                 tv_favorite.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
@@ -242,28 +294,16 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
     private void unCheckedAll() {
         ib_focuses.setSelected(false);
         ib_newest.setSelected(false);
+        ib_local.setSelected(false);
         ib_favorite.setSelected(false);
         ib_me.setSelected(false);
         tv_focuses.setTextColor(getResources().getColor(R.color.light_gray));
         tv_newest.setTextColor(getResources().getColor(R.color.light_gray));
+        tv_local.setTextColor(getResources().getColor(R.color.light_gray));
         tv_favorite.setTextColor(getResources().getColor(R.color.light_gray));
         tv_me.setTextColor(getResources().getColor(R.color.light_gray));
     }
 
-    private class MyLocationListener implements BDLocationListener {
-
-        @Override
-        public void onReceiveLocation(BDLocation location) {
-            final Snackbar snackbar = Snackbar.make(fragment_container, location.getCity(), Snackbar.LENGTH_INDEFINITE);
-            snackbar.setAction("OK", new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    snackbar.dismiss();
-                }
-            }).show();
-
-        }
-    }
 
     @Override
     public void onClick(View v) {
@@ -272,6 +312,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
             setCheckedFragment(TYPE_FOCUSES);
         } else if (R.id.ll_newest == id) {
             setCheckedFragment(TYPE_NEWEST);
+        } else if (R.id.ll_local == id) {
+            setCheckedFragment(TYPE_LOCAL);
         } else if (R.id.ll_favorite == id) {
             setCheckedFragment(TYPE_FAVORITE);
         } else if (R.id.ll_me == id) {
@@ -283,6 +325,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         FragmentTransaction transaction = fm.beginTransaction();
         NewsListFragment focusesFragment = (NewsListFragment) fm.findFragmentByTag("FocusesFragment");
         NewsListFragment newestFragment = (NewsListFragment) fm.findFragmentByTag("NewestFragment");
+        NewsListFragment localFragment = (NewsListFragment) fm.findFragmentByTag("LocalFragment");
         FavFragment favoritesFragment = (FavFragment) fm.findFragmentByTag("FavoritesFragment");
         MeFragment meFragment = (MeFragment) fm.findFragmentByTag("MeFragment");
 
@@ -290,6 +333,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
             case TYPE_FOCUSES:
                 if(newestFragment != null)
                     transaction = transaction.hide(newestFragment);
+                if(localFragment != null)
+                    transaction = transaction.hide(localFragment);
                 if(favoritesFragment != null)
                     transaction = transaction.hide(favoritesFragment);
                 if(meFragment != null)
@@ -303,6 +348,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
             case TYPE_NEWEST:
                 if(focusesFragment != null)
                     transaction = transaction.hide(focusesFragment);
+                if(localFragment != null)
+                    transaction = transaction.hide(localFragment);
                 if(favoritesFragment != null)
                     transaction = transaction.hide(favoritesFragment);
                 if(meFragment != null)
@@ -313,11 +360,28 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
                     transaction.add(R.id.fragment_container, NewsListFragment.newInstance(TYPE_NEWEST), "NewestFragment").commit();
                 }
                 break;
+            case TYPE_LOCAL:
+                if(focusesFragment != null)
+                    transaction = transaction.hide(focusesFragment);
+                if(newestFragment != null)
+                    transaction = transaction.hide(newestFragment);
+                if(favoritesFragment != null)
+                    transaction = transaction.hide(favoritesFragment);
+                if(meFragment != null)
+                    transaction = transaction.hide(meFragment);
+                if(localFragment != null){
+                    transaction.show(localFragment).commit();
+                }else{
+                    transaction.add(R.id.fragment_container, NewsListFragment.newInstance(TYPE_LOCAL), "LocalFragment").commit();
+                }
+                break;
             case TYPE_FAVORITE:
                 if(focusesFragment != null)
                     transaction = transaction.hide(focusesFragment);
                 if(newestFragment != null)
                     transaction = transaction.hide(newestFragment);
+                if(localFragment != null)
+                    transaction = transaction.hide(localFragment);
                 if(meFragment != null)
                     transaction = transaction.hide(meFragment);
                 if(favoritesFragment != null){
@@ -331,6 +395,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
                     transaction = transaction.hide(focusesFragment);
                 if(newestFragment != null)
                     transaction = transaction.hide(newestFragment);
+                if(localFragment != null)
+                    transaction = transaction.hide(localFragment);
                 if(favoritesFragment != null)
                     transaction = transaction.hide(favoritesFragment);
                 if(meFragment != null){

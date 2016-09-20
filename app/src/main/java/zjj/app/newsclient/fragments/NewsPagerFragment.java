@@ -12,6 +12,7 @@ import android.os.Looper;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +25,7 @@ import java.util.TreeMap;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+import zjj.app.newsclient.BuildConfig;
 import zjj.app.newsclient.R;
 import zjj.app.newsclient.activities.HomeActivity;
 import zjj.app.newsclient.adapters.NewsListAdapter;
@@ -34,6 +36,7 @@ import zjj.app.newsclient.base.BaseFragment;
 import zjj.app.newsclient.domain.NewsList;
 import zjj.app.newsclient.ui.VerticalSpaceItemDecoration;
 import zjj.app.newsclient.utils.Constant;
+import zjj.app.newsclient.utils.SharedPreferencesUtils;
 
 public class NewsPagerFragment extends BaseFragment {
 
@@ -44,17 +47,18 @@ public class NewsPagerFragment extends BaseFragment {
 
     public NewsPagerFragment(){}
 
-    public static NewsPagerFragment newInstance(String channelId, String page){
-        return newInstance(channelId, page, "0", "0");
-    }
+   /* public static NewsPagerFragment newInstance(String channelId, String page){
+        return newInstance(channelId, page, "0", "0", null);
+    }*/
 
-    public static NewsPagerFragment newInstance(String channelId, String page, String needContent, String needHtml){
+    public static NewsPagerFragment newInstance(int type, String channelId, String page, String needContent, String needHtml){
         NewsPagerFragment fragment = new NewsPagerFragment();
         Bundle args = new Bundle();
         args.putString("channelId", channelId);
         args.putString("page", page);
         args.putString("needContent", needContent);
         args.putString("needHtml", needHtml);
+        args.putInt("type", type);
         fragment.setArguments(args);
 
         return fragment;
@@ -123,12 +127,19 @@ public class NewsPagerFragment extends BaseFragment {
         String page = args.getString("page", "1");
         String needContent = args.getString("needContent", "0");
         String needHtml = args.getString("needHtml", "0");
+        int type = args.getInt("type", 0);
+
 
         TreeMap<String, String> params = new TreeMap<>();
         params.put("channelId", channelId);
         params.put("page", page);
         params.put("needContent", needContent);
         params.put("needHtml",needHtml);
+        if(type == 2){
+            String title = SharedPreferencesUtils.getString(context, "city", "北京");
+            if (BuildConfig.DEBUG) Log.d("NewsPagerFragment", title);
+            params.put("title", title);
+        }
 
         return params;
     }

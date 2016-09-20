@@ -68,6 +68,33 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/ll_local"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageButton
+            android:clickable="false"
+            android:focusableInTouchMode="false"
+            android:focusable="false"
+            android:id="@+id/ib_local"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:scaleType="fitCenter"
+            android:background="@android:color/transparent"
+            android:src="@drawable/selector_local" />
+
+        <TextView
+            android:id="@+id/tv_local"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="本地"
+            android:textColor="@color/light_gray" />
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/ll_favorite"
         android:layout_width="0dp"
         android:layout_height="match_parent"

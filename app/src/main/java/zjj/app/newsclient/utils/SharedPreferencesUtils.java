@@ -8,6 +8,7 @@ package zjj.app.newsclient.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import java.util.Set;
 

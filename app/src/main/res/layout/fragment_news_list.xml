@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (c) 2016.
   ~ Jason Zhang
   ~ All Rights Reserved
@@ -24,15 +23,26 @@
             app:layout_scrollFlags="scroll|enterAlways"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-        <android.support.design.widget.TabLayout
-            android:id="@+id/tab_layout"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:background="@color/white"
-            app:tabSelectedTextColor="@color/colorPrimary"
-            app:tabTextColor="@color/light_gray"
-            app:tabIndicatorColor="@color/colorPrimary" />
+            android:orientation="horizontal">
+            <android.support.design.widget.TabLayout
+                android:id="@+id/tab_layout"
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:layout_height="40dp"
+                android:background="@color/white"
+                app:tabIndicatorColor="@color/colorPrimary"
+                app:tabSelectedTextColor="@color/colorPrimary"
+                app:tabTextColor="@color/light_gray" />
 
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:src="@drawable/ic_menu_camera"/>
+        </LinearLayout>
     </android.support.design.widget.AppBarLayout>
 
     <!--<include layout="@layout/content_home" />-->
