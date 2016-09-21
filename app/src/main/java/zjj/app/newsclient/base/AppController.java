@@ -73,8 +73,19 @@ public class AppController extends Application {
         getClient().newCall(request).enqueue(callback);
     }
 
-    private void executeGetRequest() {
-
+    public void enqueueStreamRequest(String url, Callback callback) {
+        Request request = new Request.Builder().get().url(url).build();
+        getClient().newCall(request).enqueue(callback);
+    }
+    public Response executeStreamRequest(String url) {
+        Request request = new Request.Builder().get().url(url).build();
+        try {
+            Response response = getClient().newCall(request).execute();
+            return response;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 

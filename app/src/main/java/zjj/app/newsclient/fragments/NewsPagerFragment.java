@@ -136,7 +136,8 @@ public class NewsPagerFragment extends BaseFragment {
         params.put("needContent", needContent);
         params.put("needHtml",needHtml);
         if(type == 2){
-            String title = SharedPreferencesUtils.getString(context, "city", "北京");
+            String city = SharedPreferencesUtils.getString(context, "city", "北京");
+            String title = city.substring(0, city.length());    //去掉"市"字
             if (BuildConfig.DEBUG) Log.d("NewsPagerFragment", title);
             params.put("title", title);
         }

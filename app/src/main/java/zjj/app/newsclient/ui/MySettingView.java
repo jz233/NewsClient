@@ -34,9 +34,9 @@ public class MySettingView extends RelativeLayout {
         String title = attrs.getAttributeValue("http://schemas.android.com/apk/res-auto", "setting_title");
         int iconRes;
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
-            iconRes = attrs.getAttributeResourceValue("http://schemas.android.com/apk/res-auto", "setting_icon", R.drawable.ic_menu_recent);
+            iconRes = attrs.getAttributeResourceValue("http://schemas.android.com/apk/res-auto", "setting_icon", R.drawable.ic_nav_recent);
         }else{
-            iconRes = attrs.getAttributeResourceValue("http://schemas.android.com/apk/res-auto", "setting_icon", R.drawable.ic_menu_recent);
+            iconRes = attrs.getAttributeResourceValue("http://schemas.android.com/apk/res-auto", "setting_icon", R.drawable.ic_nav_recent);
         }
         setSettingTitle(title);
         setSettingIcon(iconRes);

@@ -220,16 +220,15 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
             final String city = location.getCity();
             String lastRememberedCity = SharedPreferencesUtils.getString(context, "city", null);
             //TODO test if current location is the same with previously stored one
-            if(!TextUtils.isEmpty(city)){
+            if(!TextUtils.isEmpty(city) && !city.equals(lastRememberedCity)){
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setTitle("设定地点")
                     .setMessage("当前您位于" + city + ",是否切换到当前城市?")
                     .setPositiveButton("切换", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            String cityName = city.substring(0, 2);
 //                            Toast.makeText(context, cityName, Toast.LENGTH_SHORT).show();
-                            SharedPreferencesUtils.putString(context, "city", cityName);
+                            SharedPreferencesUtils.putString(context, "city", city);
                             dialog.dismiss();
                         }
                     })

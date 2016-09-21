@@ -22,5 +22,6 @@ public class Constant {
 
 
     public final static String TABLE_RECENT = "recent";
+    public final static String TABLE_FAVORITES = "favorites";
 
 }
